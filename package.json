@@ -1,0 +1,23 @@
+{
+  "name": "smartserve-qr-based-table-ordering-system",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/CCAvenir/SmartServe-QR-Based-Table-Ordering-System.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/CCAvenir/SmartServe-QR-Based-Table-Ordering-System/issues"
+  },
+  "homepage": "https://github.com/CCAvenir/SmartServe-QR-Based-Table-Ordering-System#readme",
+  "dependencies": {
+    "express": "^5.2.1"
+  }
+}
