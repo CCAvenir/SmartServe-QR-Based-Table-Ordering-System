@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Restaurant Table Status</title>
+
+<style>
+/* Elegant fine dining restaurant color scheme */
+body {
+    font-family: 'Garamond', 'Times New Roman', serif;
+    background: #f7f3e9;
+    padding: 20px;
+    color: #444444;
+}
+
+/* Header - More elegant */
+.header {
+    background: linear-gradient(135deg, #1a1a2e, #2d3047);
+    color: #f7f3e9;
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    border-bottom: 3px solid #c8a96a;
+}
+
+.header img {
+    width: 40px;
+    margin-right: 15px;
+    border-radius: 50%;
+    border: 2px solid #c8a96a;
+}
+
+.header h1 {
+    margin: 0;
+    font-size: 24px;
+    letter-spacing: 1px;
+    font-weight: 300;
+}
+
+/* Tables layout */
+.tables {
+    display: flex;
+    gap: 25px;
+    margin-top: 30px;
+    flex-wrap: wrap;
+}
+
+/* Table card - More refined */
+.table-card {
+    background: #2d3047;
+    border: 1px solid #c8a96a;
+    width: 260px;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+    transition: transform 0.3s ease;
+}
+
+.table-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+}
+
+.table-card h3 {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #c8a96a;
+    font-size: 20px;
+    letter-spacing: 0.5px;
+    border-bottom: 1px solid #c8a96a;
+    padding-bottom: 10px;
+}
+
+/* Food item */
+.food-item {
+    border-bottom: 1px solid rgba(200, 169, 106, 0.3);
+    padding-bottom: 15px;
+    margin-bottom: 15px;
+}
+
+.food-name {
+    font-weight: 600;
+    color: #f7f3e9;
+    font-size: 16px;
+    margin-bottom: 8px;
+}
+
+/* Status colors - More sophisticated */
+.status-Pending { 
+    color: #c8a96a;
+    font-weight: 500;
+}
+.status-Done { 
+    color: #6f8f7a;
+    font-weight: 500;
+}
+.status-Served { 
+    color: #a8d5ba;
+    font-weight: 500;
+}
+.status-Cancelled { 
+    color: #c97c8d;
+    font-weight: 500;
+}
+
+.controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 10px;
+}
+
+/* Form elements */
+select {
+    background: #f7f3e9;
+    border: 1px solid #c8a96a;
+    border-radius: 4px;
+    padding: 6px 10px;
+    color: #444444;
+    font-family: inherit;
+    width: 120px;
+    cursor: pointer;
+}
+
+select:focus {
+    outline: none;
+    border-color: #e6d3a6;
+    box-shadow: 0 0 0 2px rgba(200, 169, 106, 0.2);
+}
+
+input[type="number"] {
+    background: #f7f3e9;
+    border: 1px solid #c8a96a;
+    border-radius: 4px;
+    padding: 6px 10px;
+    color: #444444;
+    width: 60px;
+    text-align: center;
+    font-family: inherit;
+}
+
+input[type="number"]:focus {
+    outline: none;
+    border-color: #e6d3a6;
+    box-shadow: 0 0 0 2px rgba(200, 169, 106, 0.2);
+}
+
+/* Timer */
+.timer {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #e6d3a6;
+    font-size: 13px;
+}
+
+.timer input {
+    margin: 0;
+}
+
+.timer-display {
+    font-family: 'Courier New', monospace;
+    background: rgba(0, 0, 0, 0.2);
+    padding: 4px 8px;
+    border-radius: 3px;
+    color: #f7f3e9;
+    min-width: 55px;
+    text-align: center;
+    margin-top: 5px;
+    border: 1px solid rgba(200, 169, 106, 0.2);
+}
+
+/* Status update animation */
+@keyframes fadeUpdate {
+    0% { opacity: 0.7; }
+    100% { opacity: 1; }
+}
+
+.status-Pending, .status-Done, .status-Served, .status-Cancelled {
+    animation: fadeUpdate 0.3s ease;
+}
+
+/* Visual indicator for active timer */
+.timer.running {
+    color: #c8a96a;
+    font-weight: 500;
+}
+
+/* Warning for low timer */
+.timer-warning {
+    color: #ff9999;
+    font-weight: bold;
+    animation: pulse 1s infinite;
+}
+
+@keyframes pulse {
+    0% { opacity: 1; }
+    50% { opacity: 0.7; }
+    100% { opacity: 1; }
+}
+</style>
+</head>
+
+<body>
+
+<div class="header">
+    <img src="https://via.placeholder.com/40/1a1a2e/c8a96a?text=R" alt="Restaurant Logo">
+    <h1>Restaurant Orders</h1>
+</div>
+
+<div class="tables">
+
+<!-- TABLE 1 -->
+<div class="table-card">
+<h3>Table 1</h3>
+
+<div class="food-item">
+    <div class="food-name">Burger</div>
+    <span id="t1f1-status" class="status-Pending">Pending</span>
+
+    <div class="controls">
+        <select onchange="updateStatus('t1f1-status', this.value)">
+            <option>Pending</option>
+            <option>Done</option>
+            <option>Served</option>
+            <option>Cancelled</option>
+        </select>
+
+        <div class="timer">
+            <input type="number" value="5" min="0"
+                   onchange="setTimer('t1f1-timer', this.value)"> min
+        </div>
+    </div>
+    <div id="t1f1-timer" class="timer-display">05:00</div>
+</div>
+
+<div class="food-item">
+    <div class="food-name">Fries</div>
+    <span id="t1f2-status" class="status-Served">Served</span>
+
+    <div class="controls">
+        <select onchange="updateStatus('t1f2-status', this.value)">
+            <option>Pending</option>
+            <option>Done</option>
+            <option selected>Served</option>
+            <option>Cancelled</option>
+        </select>
+
+        <div class="timer">
+            <input type="number" value="3" min="0"
+                   onchange="setTimer('t1f2-timer', this.value)"> min
+        </div>
+    </div>
+    <div id="t1f2-timer" class="timer-display">03:00</div>
+</div>
+</div>
+
+<!-- TABLE 2 -->
+<div class="table-card">
+<h3>Table 2</h3>
+
+<div class="food-item">
+    <div class="food-name">Pasta</div>
+    <span id="t2f1-status" class="status-Done">Done</span>
+
+    <div class="controls">
+        <select onchange="updateStatus('t2f1-status', this.value)">
+            <option>Pending</option>
+            <option selected>Done</option>
+            <option>Served</option>
+            <option>Cancelled</option>
+        </select>
+
+        <div class="timer">
+            <input type="number" value="7" min="0"
+                   onchange="setTimer('t2f1-timer', this.value)"> min
+        </div>
+    </div>
+    <div id="t2f1-timer" class="timer-display">07:00</div>
+</div>
+</div>
+
+<!-- TABLE 3 -->
+<div class="table-card">
+<h3>Table 3</h3>
+
+<div class="food-item">
+    <div class="food-name">Pizza</div>
+    <span id="t3f1-status" class="status-Cancelled">Cancelled</span>
+
+    <div class="controls">
+        <select onchange="updateStatus('t3f1-status', this.value)">
+            <option>Pending</option>
+            <option>Done</option>
+            <option>Served</option>
+            <option selected>Cancelled</option>
+        </select>
+
+        <div class="timer">
+            <input type="number" value="0" min="0"
+                   onchange="setTimer('t3f1-timer', this.value)"> min
+        </div>
+    </div>
+    <div id="t3f1-timer" class="timer-display">00:00</div>
+</div>
+</div>
+
+<!-- TABLE 4 -->
+<div class="table-card">
+<h3>Table 4</h3>
+
+<div class="food-item">
+    <div class="food-name">Steak</div>
+    <span id="t4f1-status" class="status-Served">Served</span>
+
+    <div class="controls">
+        <select onchange="updateStatus('t4f1-status', this.value)">
+            <option>Pending</option>
+            <option>Done</option>
+            <option selected>Served</option>
+            <option>Cancelled</option>
+        </select>
+
+        <div class="timer">
+            <input type="number" value="10" min="0"
+                   onchange="setTimer('t4f1-timer', this.value)"> min
+        </div>
+    </div>
+    <div id="t4f1-timer" class="timer-display">10:00</div>
+</div>
+</div>
+
+</div>
+
+<script>
+const timers = {};
+
+function updateStatus(id, status) {
+    const el = document.getElementById(id);
+    el.textContent = status;
+    el.className = "status-" + status;
+    
+    // Add visual feedback
+    el.style.transform = 'scale(1.1)';
+    setTimeout(() => {
+        el.style.transform = 'scale(1)';
+    }, 150);
+}
+
+function setTimer(timerId, minutes) {
+    clearInterval(timers[timerId]);
+    let seconds = minutes * 60;
+    const displayEl = document.getElementById(timerId);
+    
+    // Reset display styles
+    displayEl.style.color = '';
+    displayEl.style.fontWeight = '';
+    displayEl.classList.remove('timer-warning');
+
+    // Update initial display
+    updateTimerDisplay(displayEl, seconds);
+
+    timers[timerId] = setInterval(() => {
+        if (seconds <= 0) {
+            clearInterval(timers[timerId]);
+            displayEl.textContent = "00:00";
+            displayEl.style.color = '#c97c8d'; // Coral pink for expired timer
+            displayEl.style.fontWeight = 'bold';
+            displayEl.classList.add('timer-warning');
+            return;
+        }
+        seconds--;
+        updateTimerDisplay(displayEl, seconds);
+        
+        // Visual feedback when under 60 seconds
+        if (seconds < 60) {
+            displayEl.style.color = '#ff9999';
+            displayEl.style.fontWeight = 'bold';
+            displayEl.classList.add('timer-warning');
+        }
+    }, 1000);
+}
+
+function updateTimerDisplay(element, seconds) {
+    const m = String(Math.floor(seconds / 60)).padStart(2, "0");
+    const s = String(seconds % 60).padStart(2, "0");
+    element.textContent = `${m}:${s}`;
+}
+
+// Initialize all timers with their default values
+document.addEventListener('DOMContentLoaded', function() {
+    // Set initial timers for each item
+    const timerElements = document.querySelectorAll('[onchange*="setTimer"]');
+    timerElements.forEach(input => {
+        const timerId = input.getAttribute('onchange').match(/'([^']+)'/)[1];
+        const minutes = input.value;
+        setTimer(timerId, minutes);
+    });
+});
+</script>
+
+</body>
+</html>
